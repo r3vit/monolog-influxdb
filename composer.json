@@ -1,0 +1,19 @@
+{
+    "name": "elardvermeulen/monolog-influxdb",
+    "description": "A handler for Monolog that sends messages to InfluxDB",
+    "keywords": ["log", "logging", "monolog", "influxdb", "laravel", "symfony"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Elard Vermeulen",
+            "email": "elard@ziggo.nl"
+        }
+    ],
+    "require": {
+        "monolog/monolog": ">=1.23.0",
+        "influxdata/influxdb-php": ">=1.14.5"
+    },
+    "autoload": {
+        "psr-4": {"InfluxDBHandler\\": "src/InfluxDBHandler"}
+    }
+}
