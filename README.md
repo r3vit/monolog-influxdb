@@ -1,13 +1,5 @@
 # monolog-influxdb
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Total Downloads][ico-downloads]][link-downloads]
-
-
 InfluxDB Handler for Monolog, which allows to store log messages in InfluxDB.
 
 ## Install
@@ -21,29 +13,30 @@ $ composer require elardvermeulen/monolog-influxdb
 ## Usage
 
 ``` php
-//Import class
+<?php
+
 use InfluxDBHandler\InfluxDBHandler;
 
-//Create InfluxDBHandler
-$influxDBHandler = new InfluxDBHandler(, \Monolog\Logger::DEBUG);
+$influxDBHandler = new InfluxDBHandler('username','password','influxdb','hostname', '8086','dbname', \Monolog\Logger::DEBUG);
 
 //Create logger
-$logger = new \Monolog\Logger($context);
+$logger = new \Monolog\Logger('channel');
 $logger->pushHandler($influxDBHandler);
 
-//Now you can use the logger, and further attach additional information
-$logger->addWarning("This life is only a test.", array('username'  => 'John Doe', 'userid'  => 245));
+// example on how to create a info log
+$logger->info("User succesfully logged in.", array('username'  => 'Peter Doe', 'userid'  => 89));
+
+// example on how to create a info log
+$logger->warning("Failed login attempt.", array('username'  => 'Peter Doe'));
+
+// example on how to create a info log
+$logger->error("Oops, something went horribly wrong.", array('username'  => 'John Doe', 'userid'  => 90));
+
 ```
 
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Testing
-
-``` bash
-$ composer test
-```
 
 ## Contributing
 
