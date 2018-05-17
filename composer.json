@@ -11,7 +11,7 @@
     ],
     "require": {
         "monolog/monolog": ">=1.23.0",
-        "influxdata/influxdb-php": ">=1.14.5"
+        "influxdb/influxdb-php": "^1.14"
     },
     "autoload": {
         "psr-4": {"InfluxDBHandler\\": "src/InfluxDBHandler"}

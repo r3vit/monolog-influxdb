@@ -10,17 +10,6 @@
 
 InfluxDB Handler for Monolog, which allows to store log messages in InfluxDB.
 
-## Structure
-
-If any of the following are applicable to your project, then the directory structure should follow industry best practices by being named the following.
-
-
-
-```
-src/
-```
-
-
 ## Install
 
 Via Composer
@@ -36,14 +25,14 @@ $ composer require elardvermeulen/monolog-influxdb
 use InfluxDBHandler\InfluxDBHandler;
 
 //Create InfluxDBHandler
-$influxDBHandler = new InfluxDBHandler($pdo, "log", array('username', 'userid'), \Monolog\Logger::DEBUG);
+$influxDBHandler = new InfluxDBHandler(, \Monolog\Logger::DEBUG);
 
 //Create logger
 $logger = new \Monolog\Logger($context);
 $logger->pushHandler($influxDBHandler);
 
 //Now you can use the logger, and further attach additional information
-$logger->addWarning("This is a great message, woohoo!", array('username'  => 'John Doe', 'userid'  => 245));
+$logger->addWarning("This life is only a test.", array('username'  => 'John Doe', 'userid'  => 245));
 ```
 
 ## Change log
@@ -62,7 +51,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
+If you discover any security related issues, please use the issue tracker.
 
 ## Requirements
 Monolog InfluxDB works with PHP 7.0 or above.
