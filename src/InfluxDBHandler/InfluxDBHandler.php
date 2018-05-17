@@ -71,15 +71,17 @@ class InfluxDBHandler extends AbstractProcessingHandler
 
     /**
      * InfluxDBHandler constructor.
-     *
      * @param string $username
      * @param string $password
      * @param string $protocol
      * @param string $host
      * @param string $port
      * @param string $db
-     * @param bool|int $level
+     * @param int $level
      * @param bool $bubble
+     * @param string $retention_duration
+     * @param int $retention_replication
+     * @throws Client\Exception
      */
     public function __construct(
         string $username,
@@ -121,6 +123,9 @@ class InfluxDBHandler extends AbstractProcessingHandler
 
     /**
      * @param array $record
+     * @return bool|void
+     * @throws \InfluxDB\Database\Exception
+     * @throws \InfluxDB\Exception
      */
     protected function write(array $record)
     {
@@ -129,7 +134,6 @@ class InfluxDBHandler extends AbstractProcessingHandler
             $this->initialise();
         }
 
-        $points = array();
         $tags = array(
             'level'         => $record['level'],
             'level_name'    => $record['level_name']
@@ -144,7 +148,7 @@ class InfluxDBHandler extends AbstractProcessingHandler
             )
         );
 
-// now just write your points like you normally would
+        // now just write your points like you normally would
         $result = $this->connection->writePoints($points);
         return $result;
 
