@@ -127,7 +127,7 @@ class InfluxDBHandler extends AbstractProcessingHandler
      * @throws \InfluxDB\Database\Exception
      * @throws \InfluxDB\Exception
      */
-    protected function write(array $record)
+    protected function write(array $record):void
     {
 
         if (!$this->initialised) {
@@ -150,8 +150,6 @@ class InfluxDBHandler extends AbstractProcessingHandler
 
         // now just write your points like you normally would
         $result = $this->connection->writePoints($points);
-        return $result;
-
     }
 
 
