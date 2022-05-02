@@ -1,5 +1,5 @@
 {
-    "name": "elardvermeulen/monolog-influxdb",
+    "name": "r3vit/monolog-influxdb",
     "description": "A handler for Monolog that sends messages to InfluxDB",
     "keywords": ["log", "logging", "monolog", "influxdb", "laravel", "symfony"],
     "license": "MIT",
