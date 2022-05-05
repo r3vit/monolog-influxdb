@@ -82,7 +82,7 @@ class InfluxDBHandler extends AbstractProcessingHandler
         string $protocol = 'influxdb',
         string $host = 'influxdb.internal',
         string $port = '8086',
-        string $db = 'manageritalia',
+        string $db = 'databasename',
         $level = Logger::DEBUG,
         bool $bubble = true,
         $retention_duration = '3M',
