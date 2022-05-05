@@ -20,10 +20,10 @@ class InfluxDBHandler extends AbstractProcessingHandler
     /**
      * @var bool defines wether the InfluxDB connection has been initialized
      */
-    private $initialised = false;
+    private $initialized = false;
 
     /**
-     * @var string
+     * @var string the InfluxDB database name
      */
     private $username;
 
@@ -53,11 +53,6 @@ class InfluxDBHandler extends AbstractProcessingHandler
     private $db;
 
     /**
-     * @var bool
-     */
-    private $async;
-
-    /**
      * @var string
      */
     private $retention_duration;
@@ -66,6 +61,11 @@ class InfluxDBHandler extends AbstractProcessingHandler
      * @var string
      */
     private $retention_replication;
+
+    /**
+     * @var Client|Database
+     */
+    private Client|Database $connection;
 
     /**
      * InfluxDBHandler constructor.
@@ -83,10 +83,10 @@ class InfluxDBHandler extends AbstractProcessingHandler
         string $host = 'influxdb.internal',
         string $port = '8086',
         string $db = 'databasename',
-        $level = Logger::DEBUG,
+        int $level = Logger::DEBUG,
         bool $bubble = true,
-        $retention_duration = '3M',
-        $retention_replication = 1)
+        string $retention_duration = '3M',
+        int $retention_replication = 1)
     {
         $this->username = $username;
         $this->password = $password;
@@ -100,7 +100,7 @@ class InfluxDBHandler extends AbstractProcessingHandler
         parent::__construct($level, $bubble);
     }
 
-    private function initialise()
+    private function initialize()
     {
         // check if a database exists then create it if it doesn't
         $database = $this->connection->getClient()->selectDB($this->db);
@@ -116,19 +116,31 @@ class InfluxDBHandler extends AbstractProcessingHandler
      *
      * @throws \InfluxDB\Database\Exception
      * @throws \InfluxDB\Exception
-     * Example: $logger->info("User succesfully logged in.", array('username'  => 'Peter Doe', 'userid'  => 89));
+     *                                      Example: $logger->info("User succesfully logged in.", array('username'  => 'Peter Doe', 'userid'  => 89));
      */
     protected function write(array $record): void
     {
-        if (!$this->initialised) {
-            $this->initialise();
+        if (!$this->initialized) {
+            $this->initialize();
         }
 
         $tags = [
+            'channel' => $record['channel'],
             'level' => $record['level'],
             'level_name' => $record['level_name'],
         ];
-        $tags = array_merge($tags, $record['context']);
+
+        // Add all the arguments available in the context array.
+        // Foreach element in the context array, we add it as a tag.
+        // This is useful to add extra information to the log.
+        foreach ($record['context'] as $key => $value) {
+            // Filter keys that are not valid tags
+            if (in_array($key, ['event', 'listener', 'exception', 'command'])) {
+                continue;
+            }
+
+            $tags = array_merge($tags, [$key => $value]);
+        }
 
         // Microseconds
         list($usec, $sec) = explode(' ', microtime());
@@ -139,27 +151,11 @@ class InfluxDBHandler extends AbstractProcessingHandler
            new Point(
                $record['channel'], // name of the measurement
                null, // the measurement value
-               ['source' => $record['channel']], // optional tags
+               $tags, // optional tags
                ['msg' => $record['message']], // optional additional fields
                $timestamp // Time precision
            ),
        ];
-
-        //    var_dump($record['channel']);
-        //    var_dump($record['message']);
-
-        // $points = array(
-        //     new Point(
-        //         "test_log", // name of the measurement
-        //         null, // the measurement value
-        //         // $record['channel'],
-        //         // $record['message'],
-        //         ['step' => 'logData'], // optional tags
-
-        //         $tags,
-        //         $timestamp
-        //     )
-        // );
 
         // now just write your points like you normally would
         $result = $this->connection->writePoints($points, Database::PRECISION_MICROSECONDS);
